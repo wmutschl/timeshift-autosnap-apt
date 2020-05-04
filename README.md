@@ -42,7 +42,7 @@ The configuration file is located in `/etc/timeshift-autosnap-apt.conf`. You can
 *  `skipAutosnap`: If set to **true** script won't be executed. Default: **false**.
 *  `deleteSnapshots`: If set to **false** old snapshots won't be deleted. Default: **true**
 *  `maxSnapshots`: Defines **maximum** number of old snapshots to keep. Default: **3**
-*  `snapshotDescription` Defines **value** used to distinguish snapshots created using timeshift-autosnap-apt. Default: **{timeshift-autosnap-apt} {created before upgrade}**
+*  `snapshotDescription` Defines **value** used to distinguish snapshots created using timeshift-autosnap-apt. Default: **{timeshift-autosnap-apt} {created before call to APT}**
 
 ## Test functionality
 To test the functionality, try (re)installing some package `maxSnapshots` number of times, e.g.
