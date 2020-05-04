@@ -5,6 +5,7 @@ Timeshift auto-snapshot script which runs before `apt upgrade|install|remove` us
 *  This scrips is a fork of [timeshift-autosnap](https://gitlab.com/gobonja/timeshift-autosnap) from the [AUR](https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=timeshift-autosnap) for Arch and Arch based distros but adapted for usage in Debian based systems which use apt as their package manager.
 *  Creates [Timeshift](https://github.com/teejee2008/timeshift) snapshots with unique comment.
 *  Deletes old snapshots which are created using this script.
+*  Makes a copy of `/boot` and `/boot/efi` to `/boot.backup` before the call to timeshift for more secure restore options.
 *  Can be manually executed by running `sudo timeshift-autosnap-apt` command.
 *  Autosnaphot can be temporarily skipped by setting SKIP_AUTOSNAP environment variable (e.g. `sudo SKIP_AUTOSNAP= apt upgrade`)
 *  Supports both `BTRFS` and `RSYNC` mode.
@@ -32,14 +33,16 @@ After this, optionally, make changes to the configuration file:
 ```bash
 sudo nano /etc/timeshift-autosnap-apt.conf
 ```
+For example, if you don't have a dedicated `/boot` partition, then you should set `snapshotBoot=false`.
 
 ## Configuration
 The configuration file is located in `/etc/timeshift-autosnap-apt.conf`. You can set the following options:
+*  `snapshotBoot`: If set to **true** /boot folder will be cloned into /boot.backup before the call to timeshift. Note that this will not include the /boot/efi folder. Default: **true**
+*  `snapshotEFI`: If set to **true** /boot/efi folder will be cloned into /boot.backup/efi before the call to timeshift. Default: **true**
 *  `skipAutosnap`: If set to **true** script won't be executed. Default: **false**.
 *  `deleteSnapshots`: If set to **false** old snapshots won't be deleted. Default: **true**
 *  `maxSnapshots`: Defines **maximum** number of old snapshots to keep. Default: **3**
 *  `snapshotDescription` Defines **value** used to distinguish snapshots created using timeshift-autosnap-apt. Default: **{timeshift-autosnap-apt} {created before upgrade}**
-
 
 ## Test functionality
 To test the functionality, try (re)installing some package `maxSnapshots` number of times, e.g.
@@ -141,8 +144,8 @@ or for RSYNC:
 
 ## Ideas and contributions
 - [x] Ask to be included into official Timeshift package, [status pending](https://github.com/teejee2008/timeshift/issues/595).
-- [ ] Add systemd-boot entry to boot into automatically generated snapshots (test on Pop!_OS)
-- [ ] Add grub boot entry to boot into automatically generated snapshots, similar to ARCH package [grub-btrfs](https://github.com/Antynea/grub-btrfs) (test on Ubuntu)
+- [x] Copy /boot and /boot/efi to filesystem for better control option when restoring (tested on Pop!_OS)
+- [ ] Check and adapt [grub-btrfs](https://github.com/Antynea/grub-btrfs) for compatibility with Debian-based systems and this script (test on Ubuntu) to automatically create menu entries into grub.
 
 **All new ideas and contributors are welcomed, just open an issue for that!**
 

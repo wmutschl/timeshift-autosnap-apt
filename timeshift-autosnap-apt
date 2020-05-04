@@ -34,6 +34,21 @@ if $(get_property "skipAutosnap" "boolean" "false") ; then
     echo "==> skipping timeshift-autosnap-apt due skipAutosnap in $CONF_FILE set to TRUE." >&2; exit 0;
 fi
 
+if $(get_property "snapshotBoot" "boolean" "true") ; then
+    echo "Rsyncing /boot into the filesystem before the call to timeshift." >&2;
+    mkdir -p /boot.backup
+    cmd="rsync -au --exclude 'efi' --delete /boot/ /boot.backup/"
+    eval $cmd
+fi
+
+if $(get_property "snapshotEFI" "boolean" "true") ; then
+    echo "Rsyncing /boot/efi into the filesystem before the call to timeshift." >&2;
+    mkdir -p /boot.backup
+    mkdir -p /boot.backup/efi
+    cmd="rsync -au --delete /boot/efi/ /boot.backup/efi/"
+    eval $cmd
+fi
+
 readonly SNAPSHOT_DESCRIPTION=$(get_property "snapshotDescription" "string" "{timeshift-autosnap-apt} {created before upgrade}")
 
 timeshift --create --comments "$SNAPSHOT_DESCRIPTION" || { echo "Unable to run timeshift-autosnap-apt! Please close Timeshift and try again. Script will now exit..." >&2; exit 1; }
