@@ -30,12 +30,7 @@ Clone this repository and run the following commands to copy the hook, bash scri
 ```bash
 git clone https://github.com/wmutschl/timeshift-autosnap-apt.git
 cd timeshift-autosnap-apt
-sudo cp 80-timeshift-autosnap-apt /etc/apt/apt.conf.d/80-timeshift-autosnap-apt
-sudo chmod 644 /etc/apt/apt.conf.d/80-timeshift-autosnap-apt
-sudo cp timeshift-autosnap-apt /usr/bin/timeshift-autosnap-apt
-sudo chmod 755 /usr/bin/timeshift-autosnap-apt
-sudo cp timeshift-autosnap-apt.conf /etc/timeshift-autosnap-apt.conf
-sudo chmod 644 /etc/timeshift-autosnap-apt.conf
+sudo make install
 ```
 After this, optionally, make changes to the configuration file:
 ```bash
