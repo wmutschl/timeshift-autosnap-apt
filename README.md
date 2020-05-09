@@ -1,24 +1,23 @@
 # timeshift-autosnap-apt
-Timeshift auto-snapshot script which runs before `apt upgrade|install|remove` using a `DPkg::Pre-Invoke` hook in apt.
+Timeshift auto-snapshot script which runs before any `apt update|install|remove` command using a `DPkg::Pre-Invoke` hook in APT.
 
 ## Features
-*  This scrips is a fork of [timeshift-autosnap](https://gitlab.com/gobonja/timeshift-autosnap) from the [AUR](https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=timeshift-autosnap) for Arch and Arch based distros but adapted for usage in Debian based systems which use apt as their package manager.
-*  Creates [Timeshift](https://github.com/teejee2008/timeshift) snapshots with unique comment.
+*  This script is a fork of [timeshift-autosnap](https://gitlab.com/gobonja/timeshift-autosnap) from the [AUR](https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=timeshift-autosnap), but adapted for usage with the APT package manager of Debian or Ubuntu based systems.
+*  Creates [Timeshift](https://github.com/teejee2008/timeshift) snapshots with a unique (customizable) comment.
+*  Keeps only a certain number of snapshots created using this script.
 *  Deletes old snapshots which are created using this script.
-*  Makes a copy of `/boot` and `/boot/efi` to `/boot.backup` before the call to timeshift for more secure restore options.
-*  Can be manually executed by running `sudo timeshift-autosnap-apt` command.
-*  Autosnaphot can be temporarily skipped by setting SKIP_AUTOSNAP environment variable (e.g. `sudo SKIP_AUTOSNAP= apt upgrade`)
+*  Makes a copy with RSYNC of `/boot` and `/boot/efi` to `/boot.backup` before the call to Timeshift for more flexible restore options.
+*  Can be manually executed by running `sudo timeshift-autosnap-apt`.
+*  Autosnaphots can be temporarily skipped by setting "SKIP_AUTOSNAP" environment variable (e.g. `sudo SKIP_AUTOSNAP= apt upgrade`)
 *  Supports both `BTRFS` and `RSYNC` mode.
-*  Supports [grub-btrfs](https://github.com/Antynea/grub-btrfs) which automatically creates boot menu entries of your snapshots into grub.
-*  For a tutorial how to use this script in production to easily rollback your system, see [Pop!_OS 20.04 btrfs-luks disaster recovery and easy system rollback using Timeshift and timeshift-autosnap-apt](https://mutschler.eu/linux/install-guides/pop-os-btrfs-recovery/).
+*  Supports [grub-btrfs](https://github.com/Antynea/grub-btrfs) which automatically creates boot menu entries of all your btrfs snapshots into grub.
+*  For a tutorial how to use this script in production to easily rollback your system, see [System Recovery with Timeshift](https://mutschler.eu/linux/install-guides/).
 
 ## Installation
 #### Install dependencies
 ```bash
 sudo apt install git make
 ```
-Note that make is only needed for `grub-btrfs`.
-
 #### Install and configure Timeshift
 ```bash
 sudo apt install timeshift
@@ -26,40 +25,43 @@ sudo apt install timeshift
 Open Timeshift and configure it either using btrfs or rsync. I recommend using btrfs as a filesystem for this, see my [btrfs installation guides](https://mutschler.eu/linux/install-guides/) for Pop!_OS, Ubuntu, and Manjaro.
 
 #### Main installation
-Clone this repository and run the following commands to copy the hook, bash script and configuration file.
+Clone this repository and install the script and configuration file with make:
 ```bash
-git clone https://github.com/wmutschl/timeshift-autosnap-apt.git
-cd timeshift-autosnap-apt
+git clone https://github.com/wmutschl/timeshift-autosnap-apt.git /home/$USER/timeshift-autosnap-apt
+cd /home/$USER/timeshift-autosnap-apt
 sudo make install
 ```
-After this, optionally, make changes to the configuration file:
+After this, make changes to the configuration file:
 ```bash
 sudo nano /etc/timeshift-autosnap-apt.conf
 ```
-For example, if you don't have a dedicated `/boot` partition, then you should set `snapshotBoot=false`.
+For example, if you don't have a dedicated `/boot` partition, then you should set `snapshotBoot=false`. This will still make a copy of `/boot/efi`.
 
 #### Optionally, install `grub-btrfs`
-[grub-btrfs](https://github.com/Antynea/grub-btrfs) is a great package which will include all btrfs snapshots into the Grub menu
-This 
+[grub-btrfs](https://github.com/Antynea/grub-btrfs) is a great package which will include all btrfs snapshots into the Grub menu. Clone and install it:
 ```bash
-git clone https://github.com/Antynea/grub-btrfs.git
-cd grub-btrfs
+git clone https://github.com/Antynea/grub-btrfs.git /home/$USER/grub-btrfs
+cd /home/$USER/grub-btrfs
 sudo make install
 ```
 By default the snapshots are displayed as "Arch Linux Snapshots", you can adapt this in `/etc/default/grub-btrfs/config`.
 
 #### Configuration
 The configuration file is located in `/etc/timeshift-autosnap-apt.conf`. You can set the following options:
-*  `snapshotBoot`: If set to **true** /boot folder will be cloned into /boot.backup before the call to timeshift. Note that this will not include the /boot/efi folder. Default: **true**
-*  `snapshotEFI`: If set to **true** /boot/efi folder will be cloned into /boot.backup/efi before the call to timeshift. Default: **true**
+*  `snapshotBoot`: If set to **true** /boot folder will be cloned with rsync into /boot.backup before the call to Timeshift. Note that this will not include the /boot/efi folder. Default: **true**
+*  `snapshotEFI`: If set to **true** /boot/efi folder will be cloned with rsync into /boot.backup/efi before the call to Timeshift. Default: **true**
 *  `skipAutosnap`: If set to **true** script won't be executed. Default: **false**.
 *  `deleteSnapshots`: If set to **false** old snapshots won't be deleted. Default: **true**
 *  `maxSnapshots`: Defines **maximum** number of old snapshots to keep. Default: **3**
-*  `updateGrub`: If set to **false** grub entries won't be generated. Default: **true**
-*  `snapshotDescription` Defines **value** used to distinguish snapshots created using timeshift-autosnap-apt. Default: **{timeshift-autosnap-apt} {created before call to APT}**
+*  `updateGrub`: If set to **false** GRUB entries won't be generated. Only if grub-btrfs is installed. Default: **true**
+*  `snapshotDescription` Defines **string** used to distinguish snapshots created using timeshift-autosnap-apt. Default: **{timeshift-autosnap-apt} {created before call to APT}**
 
 ## Test functionality
-To test the functionality, try (re)installing some package `maxSnapshots` number of times, e.g.
+To test the functionality, simply run
+```bash
+sudo timeshift-autosnap-apt
+``` 
+Or try (re)installing some package `maxSnapshots` number of times, e.g.
 ```bash
 sudo apt install --reinstall rolldice
 sudo apt install --reinstall rolldice
@@ -158,8 +160,8 @@ or for RSYNC:
 
 ## Ideas and contributions
 - [x] Ask to be included into official Timeshift package, [status pending](https://github.com/teejee2008/timeshift/issues/595).
-- [x] Copy /boot and /boot/efi to filesystem for better control option when restoring (tested on Pop!_OS)
-- [x] Check and adapt [grub-btrfs](https://github.com/Antynea/grub-btrfs) for compatibility with Debian-based systems and this script (test on Ubuntu) to automatically create menu entries into grub.
+- [x] rsync /boot and /boot/efi to filesystem for more flexibility when restoring failed kernel updates (tested on Ubuntu 20.04 and Pop!_OS 20.04)
+- [x] Check and adapt [grub-btrfs](https://github.com/Antynea/grub-btrfs) for compatibility with Debian-based systems to automatically create menu entries into grub (tested on Ubuntu 20.04).
 
-**All new ideas and contributors are welcomed, just open an issue for that!**
+**All new ideas and contributors are much appreciated and welcome, just open an issue for that!**
 
