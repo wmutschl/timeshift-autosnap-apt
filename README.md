@@ -157,6 +157,15 @@ or for RSYNC:
 # Removed '2020-04-29_10-24-35'                                                   
 # ------------------------------------------------------------------------------
 ```
+---
+
+### Uninstallation
+```
+cd /home/$USER/grub-btrfs
+sudo make uninstall
+```
+
+---
 
 ## Ideas and contributions
 - [x] Ask to be included into official Timeshift package, [status pending](https://github.com/teejee2008/timeshift/issues/595).
