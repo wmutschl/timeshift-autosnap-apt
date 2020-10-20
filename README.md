@@ -157,6 +157,15 @@ or for RSYNC:
 # Removed '2020-04-29_10-24-35'                                                   
 # ------------------------------------------------------------------------------
 ```
+---
+
+### Uninstallation
+```
+cd /home/$USER/timeshift-autosnap-apt
+sudo make uninstall
+```
+
+---
 
 ## Ideas and contributions
 - [x] Ask to be included into official Timeshift package, [status pending](https://github.com/teejee2008/timeshift/issues/595).
@@ -165,4 +174,3 @@ or for RSYNC:
 - [ ] Make rsync of /boot and /boot/efi dependent on btrfs only, provide "auto" model, i.e. check whether efi or legacy boot and then rsync into filesystem
 
 **All new ideas and contributors are much appreciated and welcome, just open an issue for that!**
-
