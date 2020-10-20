@@ -161,7 +161,7 @@ or for RSYNC:
 
 ### Uninstallation
 ```
-cd /home/$USER/grub-btrfs
+cd /home/$USER/timeshift-autosnap-apt
 sudo make uninstall
 ```
 
@@ -174,4 +174,3 @@ sudo make uninstall
 - [ ] Make rsync of /boot and /boot/efi dependent on btrfs only, provide "auto" model, i.e. check whether efi or legacy boot and then rsync into filesystem
 
 **All new ideas and contributors are much appreciated and welcome, just open an issue for that!**
-
