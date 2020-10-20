@@ -172,5 +172,7 @@ sudo make uninstall
 - [x] rsync /boot and /boot/efi to filesystem for more flexibility when restoring failed kernel updates (tested on Ubuntu 20.04 and Pop!_OS 20.04)
 - [x] Check and adapt [grub-btrfs](https://github.com/Antynea/grub-btrfs) for compatibility with Debian-based systems to automatically create menu entries into grub (tested on Ubuntu 20.04).
 - [ ] Make rsync of /boot and /boot/efi dependent on btrfs only, provide "auto" model, i.e. check whether efi or legacy boot and then rsync into filesystem
+- [ ] Add prompt or pause if user wants to trigger timeshift-autosnap-apt or add optional timeout between snapshots
+- [ ] Provide better description of snapshots based on call to apt
 
 **All new ideas and contributors are much appreciated and welcome, just open an issue for that!**
