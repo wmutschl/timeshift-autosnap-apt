@@ -1,5 +1,5 @@
 # timeshift-autosnap-apt
-Timeshift auto-snapshot script which runs before any `apt update|install|remove` command using a `DPkg::Pre-Invoke` hook in APT.
+Timeshift auto-snapshot script which runs before any `apt update|install|remove` command using a `DPkg::Pre-Invoke` hook in APT. Works best in `BTRFS` mode, but `RSYNC` is also supported (might be slow though).
 
 ## Features
 *  This script is a fork of [timeshift-autosnap](https://gitlab.com/gobonja/timeshift-autosnap) from the [AUR](https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=timeshift-autosnap), but adapted for usage with the APT package manager of Debian or Ubuntu based systems.
@@ -9,7 +9,6 @@ Timeshift auto-snapshot script which runs before any `apt update|install|remove`
 *  Makes a copy with RSYNC of `/boot` and `/boot/efi` to `/boot.backup` before the call to Timeshift for more flexible restore options.
 *  Can be manually executed by running `sudo timeshift-autosnap-apt`.
 *  Autosnaphots can be temporarily skipped by setting "SKIP_AUTOSNAP" environment variable (e.g. `sudo SKIP_AUTOSNAP= apt upgrade`)
-*  Supports both `BTRFS` and `RSYNC` mode.
 *  Supports [grub-btrfs](https://github.com/Antynea/grub-btrfs) which automatically creates boot menu entries of all your btrfs snapshots into grub.
 *  For a tutorial how to use this script in production to easily rollback your system, see [System Recovery with Timeshift](https://mutschler.eu/linux/install-guides/).
 
@@ -157,12 +156,22 @@ or for RSYNC:
 # Removed '2020-04-29_10-24-35'                                                   
 # ------------------------------------------------------------------------------
 ```
+---
+
+### Uninstallation
+```
+cd /home/$USER/timeshift-autosnap-apt
+sudo make uninstall
+```
+
+---
 
 ## Ideas and contributions
 - [x] Ask to be included into official Timeshift package, [status pending](https://github.com/teejee2008/timeshift/issues/595).
 - [x] rsync /boot and /boot/efi to filesystem for more flexibility when restoring failed kernel updates (tested on Ubuntu 20.04 and Pop!_OS 20.04)
 - [x] Check and adapt [grub-btrfs](https://github.com/Antynea/grub-btrfs) for compatibility with Debian-based systems to automatically create menu entries into grub (tested on Ubuntu 20.04).
 - [ ] Make rsync of /boot and /boot/efi dependent on btrfs only, provide "auto" model, i.e. check whether efi or legacy boot and then rsync into filesystem
+- [ ] Add prompt or pause if user wants to trigger timeshift-autosnap-apt or add optional timeout between snapshots
+- [ ] Provide better description of snapshots based on call to apt
 
 **All new ideas and contributors are much appreciated and welcome, just open an issue for that!**
-
