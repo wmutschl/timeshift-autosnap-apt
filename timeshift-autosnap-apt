@@ -51,7 +51,17 @@ fi
 
 readonly SNAPSHOT_DESCRIPTION=$(get_property "snapshotDescription" "string" "{timeshift-autosnap-apt} {created before upgrade}")
 
-timeshift --create --comments "$SNAPSHOT_DESCRIPTION" || { echo "Unable to run timeshift-autosnap-apt! Please close Timeshift and try again. Script will now exit..." >&2; exit 1; }
+# This is a makeshift do-while loop, as per https://stackoverflow.com/a/16489942
+while true; do
+    SNAPSHOT_SUCCESSFUL=1
+    if ! timeshift --create --comments "$SNAPSHOT_DESCRIPTION"; then
+        echo "Unable to run timeshift-autosnap-apt! Please close Timeshift and try again. Script will exit in 30 seconds." >&2
+        read -t30 -n1 -p"Press any key  to try again. " || exit 1
+    else
+        SNAPSHOT_SUCCESSFUL=0
+    fi
+    [[ $SNAPSHOT_SUCCESSFUL -eq 1 ]] || break
+done
 
 if $(get_property "deleteSnapshots" "boolean" "true") ; then
     timeshift --list > $SNAPSHOTS_TO_DELETE
