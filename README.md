@@ -1,5 +1,5 @@
 # timeshift-autosnap-apt
-Timeshift auto-snapshot script which runs before any `apt update|install|remove` command using a `DPkg::Pre-Invoke` hook in APT. Works best in `BTRFS` mode, but `RSYNC` is also supported (might be slow though).
+Timeshift auto-snapshot script which runs before any `apt install|remove` command using a `DPkg::Pre-Invoke` hook in APT. Works best in `BTRFS` mode, but `RSYNC` is also supported (might be slow though).
 
 ## Features
 *  This script is a fork of [timeshift-autosnap](https://gitlab.com/gobonja/timeshift-autosnap) from the [AUR](https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=timeshift-autosnap), but adapted for usage with the APT package manager of Debian or Ubuntu based systems.
